@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SDWebImage
+import MBProgressHUD
 
 class GalleryPhotoCVC: UICollectionViewCell {
 
@@ -17,7 +19,10 @@ class GalleryPhotoCVC: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-
+        super.prepareForReuse()
+        self.imageView.image = nil
+        self.imageView.sd_cancelCurrentImageLoad()
+        MBProgressHUD.hide(for: self.imageView, animated: true)
     }
 
 }

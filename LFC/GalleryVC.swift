@@ -66,10 +66,10 @@ class GalleryVC: UIViewController
         let screenSize = UIScreen.main.bounds
         let screenWidth = screenSize.width
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 2, left: 2, bottom: 0, right: 2)
+        layout.sectionInset = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         layout.itemSize = CGSize(width: screenWidth/3 - 2, height: screenWidth/3 - 2)
-        
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 1
+        layout.minimumInteritemSpacing = 1
         self.galleryView.collectionViewLayout = layout
         
         if(self.tabBarController?.selectedIndex == 0)
@@ -156,20 +156,27 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let galleryPhotoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotoCVC", for: indexPath) as! GalleryPhotoCVC
-        let index = indexPath.section * 3 + indexPath.row
-        let photo = self.photos[index]
+
+        let photo = self.photos[indexPath.row]
+        
         if(photo.photoImageThumbnail != nil)
         {
             galleryPhotoCVC.imageView.image = photo.photoImageThumbnail
         }else{
+            let hud = MBProgressHUD.showAdded(to: galleryPhotoCVC.imageView, animated: true)
+            //hud.mode = .determinate
+            hud.contentColor = UIColor.lightGray
+            hud.bezelView.style = .solidColor
+            hud.bezelView.color = UIColor.clear
             galleryPhotoCVC.imageView.sd_setImage(with: photo.photoURLThumbnail!, completed: { (image, error, cashetype, url) in
                 photo.photoImageThumbnail = image
+                MBProgressHUD.hide(for: galleryPhotoCVC.imageView, animated: true)
             })
         }
         
         galleryPhotoCVC.imageView.contentMode = .scaleAspectFill
         
-        if ( index == self.photos.count - 1)
+        if ( indexPath.row == self.photos.count - 1)
         {
             self.page = self.page + 1
             self.loadPhotos()
@@ -178,13 +185,9 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
         return galleryPhotoCVC
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int
-    {
-        return Int(ceil(Double(self.photos.count) / 3.0))
-    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        return (((section + 1) * 3) < self.photos.count ? 3 : 3 - (((section + 1) * 3) - self.photos.count))
+        return self.photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
@@ -263,6 +266,11 @@ extension UIViewController{
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         self.view.backgroundColor = UIColor(patternImage: UIImage(named:"background")!)
+    
+        let backgroundImage = UIImageView(frame: self.view.frame)
+        backgroundImage.image = UIImage(named: "background")
+        self.view.insertSubview(backgroundImage, at: 0)
+        
         UIApplication.shared.statusBarStyle = .lightContent
     }
 }
