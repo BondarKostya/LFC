@@ -124,12 +124,17 @@ extension GalleryVC : CLLocationManagerDelegate
     }
     func checkLocation(status: CLAuthorizationStatus) -> String?
     {
+
         switch status {
         case .authorizedAlways,
              .authorizedWhenInUse:
-            print(locationManger.location!.coordinate.longitude)
-            print(locationManger.location!.coordinate.latitude)
-            let centerCoord = CLLocationCoordinate2D(latitude: locationManger.location!.coordinate.latitude, longitude: locationManger.location!.coordinate.longitude)
+            guard let location = locationManger.location else
+            {
+                return nil
+            }
+            print(location.coordinate.longitude)
+            print(location.coordinate.latitude)
+            let centerCoord = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             let region = MKCoordinateRegionMakeWithDistance(centerCoord, 1000, 1000)
             
             let latMin = region.center.latitude - 0.5 * region.span.latitudeDelta;
