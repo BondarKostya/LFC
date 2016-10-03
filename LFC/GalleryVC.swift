@@ -104,11 +104,11 @@ class GalleryVC: UIViewController
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
         DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: self.page, bbox: self.bbox ,searchText: self.searchText, callback: { [weak weakSelf = self] (loadedPhotos) in
-            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
             guard let strongSelf = weakSelf else
             {
                 return
             }
+            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
             strongSelf.photos.append(contentsOf: loadedPhotos)
             if(strongSelf.photos.count == 0)
             {
@@ -157,24 +157,7 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     {
         let galleryPhotoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotoCVC", for: indexPath) as! GalleryPhotoCVC
 
-        let photo = self.photos[indexPath.row]
-        
-        if(photo.photoImageThumbnail != nil)
-        {
-            galleryPhotoCVC.imageView.image = photo.photoImageThumbnail
-        }else{
-            let hud = MBProgressHUD.showAdded(to: galleryPhotoCVC.imageView, animated: true)
-            //hud.mode = .determinate
-            hud.contentColor = UIColor.lightGray
-            hud.bezelView.style = .solidColor
-            hud.bezelView.color = UIColor.clear
-            galleryPhotoCVC.imageView.sd_setImage(with: photo.photoURLThumbnail!, completed: { (image, error, cashetype, url) in
-                photo.photoImageThumbnail = image
-                MBProgressHUD.hide(for: galleryPhotoCVC.imageView, animated: true)
-            })
-        }
-        
-        galleryPhotoCVC.imageView.contentMode = .scaleAspectFill
+        galleryPhotoCVC.setup(with:self.photos[indexPath.row])
         
         if ( indexPath.row == self.photos.count - 1)
         {
@@ -192,8 +175,7 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        let index = indexPath.section * 3 + indexPath.row
-        let photo = self.photos[index]
+        let photo = self.photos[indexPath.row]
         self.selectedPhoto = photo
         self.performSegue(withIdentifier: "PhotoDetail", sender: self)
     }

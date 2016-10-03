@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class PhotoDetailVC: UIViewController {
 
@@ -25,9 +26,19 @@ class PhotoDetailVC: UIViewController {
                 self.imageView.image = photo.photoImageOriginal
                 self.initScrollView(self.imageView.image!)
             }else{
+                let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+                //hud.mode = .determinate
+                hud.contentColor = UIColor.lightGray
+                hud.bezelView.style = .solidColor
+                hud.bezelView.color = UIColor.clear
                 self.imageView.sd_setImage(with: photo.photoURLOriginal!, completed: {[weak weakSelf = self] (image, error, cashetype, url) in
+                    guard let strongSelf = weakSelf else
+                    {
+                        return
+                    }
                     photo.photoImageOriginal = image
-                    weakSelf?.initScrollView(image!)
+                    strongSelf.initScrollView(image!)
+                    MBProgressHUD.hide(for: strongSelf.view, animated: true)
                 })
             }
         }
@@ -62,8 +73,8 @@ class PhotoDetailVC: UIViewController {
     func setZoomScale() {
         let imageViewSize = self.imageView.bounds.size
         let scrollViewSize = self.scrollView.bounds.size
-        let widthScale = scrollViewSize.width / imageViewSize.width
-        let heightScale = scrollViewSize.height / imageViewSize.height
+//        let widthScale = scrollViewSize.width / imageViewSize.width
+//        let heightScale = scrollViewSize.height / imageViewSize.height
         
         self.scrollView.minimumZoomScale = 0.1
         self.scrollView.maximumZoomScale = 4.0

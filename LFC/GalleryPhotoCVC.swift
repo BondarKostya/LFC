@@ -24,5 +24,26 @@ class GalleryPhotoCVC: UICollectionViewCell {
         self.imageView.sd_cancelCurrentImageLoad()
         MBProgressHUD.hide(for: self.imageView, animated: true)
     }
+    
+    func setup(with photo: Photo)
+    {
+        let photo = photo
+        
+        if(photo.photoImageThumbnail != nil)
+        {
+            self.imageView.image = photo.photoImageThumbnail
+        }else{
+            let hud = MBProgressHUD.showAdded(to: self.imageView, animated: true)
+            //hud.mode = .determinate
+            hud.contentColor = UIColor.lightGray
+            hud.bezelView.style = .solidColor
+            hud.bezelView.color = UIColor.clear
+            self.imageView.sd_setImage(with: photo.photoURLThumbnail!, completed: { (image, error, cashetype, url) in
+                photo.photoImageThumbnail = image
+                MBProgressHUD.hide(for: self.imageView, animated: true)
+            })
+        }
+        self.imageView.contentMode = .scaleAspectFill
+    }
 
 }
