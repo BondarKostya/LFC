@@ -24,6 +24,7 @@ PODS:
   - libwebp/utils (0.5.0):
     - libwebp/core
   - libwebp/webp (0.5.0)
+  - MBProgressHUD (1.0.0)
   - SDWebImage/Core (3.8.2)
   - SDWebImage/WebP (3.8.2):
     - libwebp
@@ -31,13 +32,15 @@ PODS:
 
 DEPENDENCIES:
   - FlickrKit (~> 1.0)
+  - MBProgressHUD (~> 1.0.0)
   - SDWebImage/WebP
 
 SPEC CHECKSUMS:
   FlickrKit: beadf880a10ccaa2f13666d04112324fe08815e2
   libwebp: 68ba2001ba6806ee52837ebd77a551a0b6567e4e
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
 
-PODFILE CHECKSUM: 717cc63de3ef90588b93663265afaf8a0e4b1206
+PODFILE CHECKSUM: 002efc4acfae4d8aff641451923c30c533e2b6b7
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.0.rc.2

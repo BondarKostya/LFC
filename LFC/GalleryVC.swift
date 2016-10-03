@@ -11,6 +11,7 @@ import FlickrKit
 import CoreLocation
 import MapKit
 import SDWebImage
+import MBProgressHUD
 enum GalleryState {
     case Gallery
     case GalleryWithSearch
@@ -98,9 +99,23 @@ class GalleryVC: UIViewController
     //MARK: - Loading photos
     func loadPhotos()
     {
+        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+        //hud.mode = .determinate
+        hud.contentColor = UIColor.lightGray
+        hud.bezelView.style = .solidColor
+        hud.bezelView.color = UIColor.clear
         DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: self.page, bbox: self.bbox ,searchText: self.searchText, callback: { [weak weakSelf = self] (loadedPhotos) in
-            weakSelf?.photos.append(contentsOf: loadedPhotos)
-            weakSelf?.galleryView.reloadData()
+            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
+            guard let strongSelf = weakSelf else
+            {
+                return
+            }
+            strongSelf.photos.append(contentsOf: loadedPhotos)
+            if(strongSelf.photos.count == 0)
+            {
+                strongSelf.messageLabel.text = self.galleryState == .Gallery ? "No results\nfor your current location" : "No results"
+            }
+            strongSelf.galleryView.reloadData()
         })
     }
     
@@ -205,14 +220,6 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     
     func numberOfSections(in collectionView: UICollectionView) -> Int
     {
-        if(self.photos.count == 0)
-        {
-            self.messageLabel.text = self.galleryState == .Gallery ? "No results\nfor your current location" : "No results"
-        }
-        else
-        {
-            self.messageLabel.text = ""
-        }
         return Int(ceil(Double(self.photos.count) / 3.0))
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
