@@ -25,13 +25,12 @@ class GalleryVC: UIViewController
     @IBOutlet weak var messageLabel: UILabel!
     
     var galleryState = GalleryState.Gallery
-    let locationManger:CLLocationManager = CLLocationManager()
     
     var photos = [Photo]()
     var selectedPhoto:Photo?
-    
-    var page = 1
     var bbox = AppParameters.sharedInstance.standartBBOX
+    var page = 1
+    
     var searchText = ""
     
     
@@ -119,61 +118,11 @@ class GalleryVC: UIViewController
         })
     }
     
-
-}
-extension GalleryVC : CLLocationManagerDelegate
-{
     func setupLocation()
     {
-        locationManger.delegate = self
-        locationManger.desiredAccuracy = kCLLocationAccuracyBest
-        if(photos.count == 0)
-        {
-           if let locationBBOX = self.checkLocation(status: CLLocationManager.authorizationStatus())
-           {
-                self.bbox = locationBBOX
-           }
-            
-        }
+        LFCLocationManager.sharedInstance.bboxDelegate = self
+        LFCLocationManager.sharedInstance.setupLocation()
         
-    }
-    func checkLocation(status: CLAuthorizationStatus) -> String?
-    {
-
-        switch status {
-        case .authorizedAlways,
-             .authorizedWhenInUse:
-            guard let location = locationManger.location else
-            {
-                return nil
-            }
-            print(location.coordinate.longitude)
-            print(location.coordinate.latitude)
-            let centerCoord = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            let region = MKCoordinateRegionMakeWithDistance(centerCoord, 1000, 1000)
-            
-            let latMin = region.center.latitude - 0.5 * region.span.latitudeDelta;
-            let latMax = region.center.latitude + 0.5 * region.span.latitudeDelta;
-            let lonMin = region.center.longitude - 0.5 * region.span.longitudeDelta;
-            let lonMax = region.center.longitude + 0.5 * region.span.longitudeDelta;
-            
-            print("\(lonMin),\(latMin),\(lonMax),\(latMax)")
-            return "\(lonMin),\(latMin),\(lonMax),\(latMax)"
-        default:
-            print("Not Authorised")
-            locationManger.requestWhenInUseAuthorization()
-            return nil
-        }
-
-    }
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
-    {
-        if let locationBBOX = self.checkLocation(status: CLLocationManager.authorizationStatus())
-        {
-            self.bbox = locationBBOX
-            self.photos = [Photo] ()
-            self.loadPhotos()
-        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -188,6 +137,17 @@ extension GalleryVC : CLLocationManagerDelegate
             
         }
     }
+
+}
+extension GalleryVC : BBOXChangeDelegate
+{
+    
+    func bboxChanged(bbox: String) {
+        self.bbox = bbox
+        self.photos = [Photo] ()
+        self.loadPhotos()
+    }
+
     
 }
 
@@ -265,7 +225,6 @@ extension GalleryVC : UISearchBarDelegate
     func searchAction()
     {
         self.page = 1
-        self.bbox = AppParameters.sharedInstance.standartBBOX
         self.photos = [Photo]()
         self.galleryView.reloadData()
         self.loadPhotos()
