@@ -10,7 +10,7 @@ import UIKit
 import FlickrKit
 
 class DataManager: NSObject {
-
+    
     static let sharedInstance:DataManager = {
         let instance = DataManager()
         return instance
@@ -47,6 +47,6 @@ class DataManager: NSObject {
                 }
             }
         }
-
+        
     }
 }

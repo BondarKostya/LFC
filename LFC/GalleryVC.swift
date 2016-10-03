@@ -40,9 +40,9 @@ class GalleryVC: UIViewController
         super.viewDidLoad()
         
         self.setBackgroundImage()
-
+        
         self.galleryView.register(UINib(nibName: "GalleryPhotoCVC", bundle: nil), forCellWithReuseIdentifier: "GalleryPhotoCVC")
-
+        
         self.galleryInit()
         
         
@@ -52,7 +52,7 @@ class GalleryVC: UIViewController
     {
         super.viewDidAppear(animated)
     }
-
+    
     override func didReceiveMemoryWarning()
     {
         super.didReceiveMemoryWarning()
@@ -60,7 +60,7 @@ class GalleryVC: UIViewController
     }
     
     //MARK: - View Init
-
+    
     func galleryInit()
     {
         let screenSize = UIScreen.main.bounds
@@ -86,7 +86,7 @@ class GalleryVC: UIViewController
             let textFieldInsideSearchBar = self.searchBar.value(forKey: "searchField") as? UITextField
             textFieldInsideSearchBar?.textColor = UIColor.white
             self.searchBar.delegate = self
-    
+            
             self.hideKeyboardWhenTappedAround()
             let cancelButtonAttributes: NSDictionary = [NSForegroundColorAttributeName: UIColor.white]
             
@@ -115,7 +115,7 @@ class GalleryVC: UIViewController
                 strongSelf.messageLabel.text = self.galleryState == .Gallery ? "No results\nfor your current location" : "No results"
             }
             strongSelf.galleryView.reloadData()
-        })
+            })
     }
     
     func setupLocation()
@@ -137,7 +137,7 @@ class GalleryVC: UIViewController
             
         }
     }
-
+    
 }
 extension GalleryVC : BBOXChangeDelegate
 {
@@ -147,7 +147,7 @@ extension GalleryVC : BBOXChangeDelegate
         self.photos = [Photo] ()
         self.loadPhotos()
     }
-
+    
     
 }
 
@@ -156,7 +156,7 @@ extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         let galleryPhotoCVC = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryPhotoCVC", for: indexPath) as! GalleryPhotoCVC
-
+        
         galleryPhotoCVC.setup(with:self.photos[indexPath.row])
         
         if ( indexPath.row == self.photos.count - 1)
@@ -248,7 +248,7 @@ extension UIViewController{
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         self.view.backgroundColor = UIColor(patternImage: UIImage(named:"background")!)
-    
+        
         let backgroundImage = UIImageView(frame: self.view.frame)
         backgroundImage.image = UIImage(named: "background")
         self.view.insertSubview(backgroundImage, at: 0)
