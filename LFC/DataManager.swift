@@ -10,7 +10,7 @@ import UIKit
 import FlickrKit
 
 class DataManager: NSObject {
-
+    
     static let sharedInstance:DataManager = {
         let instance = DataManager()
         return instance
@@ -30,7 +30,17 @@ class DataManager: NSObject {
         flickr.text = searchText
         FlickrKit.shared().call(flickr) { (response, error) in
             DispatchQueue.main.async {
-                if (response != nil) {
+                if(error != nil)
+                { 
+                    guard let err = error as? NSError else
+                    {
+                        return
+                    }
+                    let notificationName = Notification.Name("ErrorHandler")
+                    NotificationCenter.default.post(name: notificationName, object: err)
+                }
+                if (response != nil)
+                {
                     var photos = [Photo]()
                     let topPhotos = response?["photos"] as! [String: AnyObject]
                     let photoArray = topPhotos["photo"] as! [[String: AnyObject]]
@@ -45,8 +55,9 @@ class DataManager: NSObject {
                     }
                     callback(photos)
                 }
+                
             }
         }
-
+        
     }
 }
