@@ -43,3 +43,5 @@ DerivedData
 # Pods
 Pods/BuildHeaders
 Pods/Headers/Build
+
+*.xcuserstate
