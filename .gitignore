@@ -1,3 +1,4 @@
+
 Thumbs.db
 .Trash
 
@@ -43,5 +44,12 @@ DerivedData
 # Pods
 Pods/BuildHeaders
 Pods/Headers/Build
+Pods/
+
+
+LFC.xcodeproj/
+
+
+LFC.xcworkspace/
 
 *.xcuserstate
