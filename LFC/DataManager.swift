@@ -39,7 +39,8 @@ class DataManager: NSObject {
                     let notificationName = Notification.Name("ErrorHandler")
                     NotificationCenter.default.post(name: notificationName, object: err)
                 }
-                if (response != nil) {
+                if (response != nil)
+                {
                     var photos = [Photo]()
                     let topPhotos = response?["photos"] as! [String: AnyObject]
                     let photoArray = topPhotos["photo"] as! [[String: AnyObject]]

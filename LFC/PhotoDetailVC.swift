@@ -15,7 +15,8 @@ class PhotoDetailVC: UIViewController {
     var imageView = UIImageView()
     
     weak var image:Photo?
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         let notificationName = Notification.Name("ErrorHandler")
         
@@ -83,7 +84,8 @@ class PhotoDetailVC: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func errorHandler(_ notification: NSNotification) {
+    func errorHandler(_ notification: NSNotification)
+    {
         
         guard let error = notification.object as? NSError else
         {
@@ -97,11 +99,13 @@ class PhotoDetailVC: UIViewController {
     
     
     
-    override func viewWillLayoutSubviews() {
+    override func viewWillLayoutSubviews()
+    {
         setZoomScale()
     }
 
-    func setZoomScale() {
+    func setZoomScale()
+    {
         let imageViewSize = self.imageView.bounds.size
         let scrollViewSize = self.scrollView.bounds.size
 //        let widthScale = scrollViewSize.width / imageViewSize.width
@@ -113,13 +117,15 @@ class PhotoDetailVC: UIViewController {
         
     }
     
-    override func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews()
+    {
         super.viewDidLayoutSubviews()
         print("layout")
         self.reSetInsets(self.scrollView)
     }
     
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -130,7 +136,8 @@ extension PhotoDetailVC: UIScrollViewDelegate {
         return imageView
     }
     
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat)
+    {
         print(scale)
     }
     func scrollViewDidZoom(_ scrollView: UIScrollView)  {

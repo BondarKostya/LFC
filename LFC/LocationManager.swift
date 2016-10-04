@@ -25,7 +25,8 @@ class LFCLocationManager : NSObject {
     
     var bboxDelegate:BBOXChangeDelegate?
     
-    private override init() {
+    private override init()
+    {
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest

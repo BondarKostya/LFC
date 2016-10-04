@@ -11,14 +11,16 @@ import SDWebImage
 import MBProgressHUD
 
 class GalleryPhotoCVC: UICollectionViewCell {
-
+    
     @IBOutlet weak var imageView: UIImageView!
-    override func awakeFromNib() {
+    override func awakeFromNib()
+    {
         super.awakeFromNib()
         // Initialization code
     }
     
-    override func prepareForReuse() {
+    override func prepareForReuse()
+    {
         super.prepareForReuse()
         self.imageView.image = nil
         self.imageView.sd_cancelCurrentImageLoad()
@@ -58,5 +60,5 @@ class GalleryPhotoCVC: UICollectionViewCell {
         }
         self.imageView.contentMode = .scaleAspectFill
     }
-
+    
 }

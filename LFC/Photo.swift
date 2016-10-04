@@ -18,7 +18,8 @@ class Photo : NSObject
     var photoId = ""
     var photoImageThumbnail:UIImage?
     var photoImageOriginal:UIImage?
-    init(photoDictionary : Dictionary<String,AnyObject>,photoURLThumbnail : URL,photoURLOriginal : URL) {
+    init(photoDictionary : Dictionary<String,AnyObject>,photoURLThumbnail : URL,photoURLOriginal : URL)
+    {
         self.photoTitle = photoDictionary["title"] as! String
         self.photoId = photoDictionary["id"] as! String
         
