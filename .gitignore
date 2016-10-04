@@ -1,0 +1,45 @@
+Thumbs.db
+.Trash
+
+# Exclude the build directory
+/build
+
+# Exclude OS X folder attributes
+.DS_Store
+
+# Exclude user-specific XCode 3 and 4 files
+*.mode1
+*.mode1v3
+*.mode2v3
+*.perspective
+*.perspectivev3
+*.pbxuser
+!default.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.perspectivev3
+xcuserdata
+profile
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+
+# Exclude temp nibs and swap files
+*.swp
+*~
+*.orig
+*.rej
+*.swp
+.#*
+*.obj
+*.o
+*.ncb
+*.ilk
+*.pyc
+
+# Pods
+Pods/BuildHeaders
+Pods/Headers/Build
