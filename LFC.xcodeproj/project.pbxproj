@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D4D34071DA37F53006451A7 /* NearbyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4D34061DA37F53006451A7 /* NearbyVC.swift */; };
+		3D4D34091DA3814B006451A7 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4D34081DA3814B006451A7 /* SearchVC.swift */; };
 		3D854C721DA2857A00A0C58B /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D854C711DA2857A00A0C58B /* LocationManager.swift */; };
 		845BB9091D93C37F0008F474 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BB9081D93C37F0008F474 /* AppDelegate.swift */; };
 		845BB90E1D93C37F0008F474 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845BB90C1D93C37F0008F474 /* Main.storyboard */; };
@@ -14,7 +16,7 @@
 		845BB9131D93C37F0008F474 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845BB9111D93C37F0008F474 /* LaunchScreen.storyboard */; };
 		845BB91B1D93C4590008F474 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 845BB91A1D93C4590008F474 /* Podfile */; };
 		845BB9211D93CF670008F474 /* Pods_LFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845BB9201D93CF670008F474 /* Pods_LFC.framework */; };
-		845BB9271D93D37E0008F474 /* GalleryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BB9261D93D37E0008F474 /* GalleryVC.swift */; };
+		845BB9271D93D37E0008F474 /* Gallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BB9261D93D37E0008F474 /* Gallery.swift */; };
 		845BB92B1D93D3EB0008F474 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BB92A1D93D3EB0008F474 /* DataManager.swift */; };
 		845BB92D1D93D40E0008F474 /* AppParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BB92C1D93D40E0008F474 /* AppParameters.swift */; };
 		84C0239B1D93DF71004BDE95 /* GalleryPhotoCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C023991D93DF71004BDE95 /* GalleryPhotoCVC.swift */; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		0B098987EE1447AD199F897F /* Pods-LFC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LFC.release.xcconfig"; path = "Pods/Target Support Files/Pods-LFC/Pods-LFC.release.xcconfig"; sourceTree = "<group>"; };
+		3D4D34061DA37F53006451A7 /* NearbyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyVC.swift; sourceTree = "<group>"; };
+		3D4D34081DA3814B006451A7 /* SearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		3D854C711DA2857A00A0C58B /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		4902521635990E1A41E549CC /* Pods_LFC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LFC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ECAD76446B790C62F047621 /* Pods-LFC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LFC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LFC/Pods-LFC.debug.xcconfig"; sourceTree = "<group>"; };
@@ -39,7 +43,7 @@
 		845BB91C1D93CF3C0008F474 /* FlickrKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlickrKit.framework; path = "../../../Library/Developer/Xcode/DerivedData/LFC-crmktsffqggsxiajsklkwaqobrgg/Build/Products/Debug-iphonesimulator/FlickrKit/FlickrKit.framework"; sourceTree = "<group>"; };
 		845BB91D1D93CF3C0008F474 /* SFFullscreenImageDetailViewController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFFullscreenImageDetailViewController.framework; path = "Pods/../build/Debug-iphoneos/SFFullscreenImageDetailViewController/SFFullscreenImageDetailViewController.framework"; sourceTree = "<group>"; };
 		845BB9201D93CF670008F474 /* Pods_LFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_LFC.framework; path = "Pods/../build/Debug-iphoneos/Pods_LFC.framework"; sourceTree = "<group>"; };
-		845BB9261D93D37E0008F474 /* GalleryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryVC.swift; sourceTree = "<group>"; };
+		845BB9261D93D37E0008F474 /* Gallery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gallery.swift; sourceTree = "<group>"; };
 		845BB92A1D93D3EB0008F474 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		845BB92C1D93D40E0008F474 /* AppParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppParameters.swift; sourceTree = "<group>"; };
 		84C023991D93DF71004BDE95 /* GalleryPhotoCVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryPhotoCVC.swift; sourceTree = "<group>"; };
@@ -116,7 +120,9 @@
 			isa = PBXGroup;
 			children = (
 				84C0239F1D9544BA004BDE95 /* PhotoDetailVC.swift */,
-				845BB9261D93D37E0008F474 /* GalleryVC.swift */,
+				845BB9261D93D37E0008F474 /* Gallery.swift */,
+				3D4D34061DA37F53006451A7 /* NearbyVC.swift */,
+				3D4D34081DA3814B006451A7 /* SearchVC.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -296,12 +302,14 @@
 			files = (
 				84C023A01D9544BA004BDE95 /* PhotoDetailVC.swift in Sources */,
 				84C0239E1D9507BC004BDE95 /* Photo.swift in Sources */,
+				3D4D34071DA37F53006451A7 /* NearbyVC.swift in Sources */,
 				845BB92B1D93D3EB0008F474 /* DataManager.swift in Sources */,
 				845BB9091D93C37F0008F474 /* AppDelegate.swift in Sources */,
 				3D854C721DA2857A00A0C58B /* LocationManager.swift in Sources */,
+				3D4D34091DA3814B006451A7 /* SearchVC.swift in Sources */,
 				845BB92D1D93D40E0008F474 /* AppParameters.swift in Sources */,
 				84C0239B1D93DF71004BDE95 /* GalleryPhotoCVC.swift in Sources */,
-				845BB9271D93D37E0008F474 /* GalleryVC.swift in Sources */,
+				845BB9271D93D37E0008F474 /* Gallery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

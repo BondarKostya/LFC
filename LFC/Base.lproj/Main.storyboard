@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="z1B-JF-HOI">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="z1B-JF-HOI">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--GalleryVC-->
+        <!--NearbyVC-->
         <scene sceneID="fSi-28-Ybe">
             <objects>
-                <viewController id="n9Z-gw-tSt" customClass="GalleryVC" customModule="LFC" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="n9Z-gw-tSt" customClass="NearbyVC" customModule="LFC" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Olc-JF-ytd"/>
                         <viewControllerLayoutGuide type="bottom" id="fIx-Ob-34v"/>
@@ -41,10 +41,6 @@
                                         </view>
                                     </collectionViewCell>
                                 </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="n9Z-gw-tSt" id="vft-4T-03X"/>
-                                    <outlet property="delegate" destination="n9Z-gw-tSt" id="cpI-wy-3NX"/>
-                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -60,8 +56,9 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="rIO-4e-2se"/>
                     <connections>
+                        <outlet property="collectionView" destination="42v-xk-0ay" id="yWb-GL-ZoB"/>
                         <outlet property="galleryView" destination="42v-xk-0ay" id="Sed-Qp-F4A"/>
-                        <outlet property="messageLabel" destination="xwr-3g-FXF" id="tjX-AB-GCQ"/>
+                        <outlet property="messageLabel" destination="xwr-3g-FXF" id="f8m-a3-3du"/>
                         <segue destination="y58-BU-KAt" kind="show" identifier="PhotoDetail" id="NX7-Ce-WY6"/>
                     </connections>
                 </viewController>
@@ -156,10 +153,10 @@
             </objects>
             <point key="canvasLocation" x="-466.39999999999998" y="381.85907046476763"/>
         </scene>
-        <!--GalleryVC-->
+        <!--SearchVC-->
         <scene sceneID="gz9-xs-4gY">
             <objects>
-                <viewController id="ezs-2G-Sb3" customClass="GalleryVC" customModule="LFC" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ezs-2G-Sb3" customClass="SearchVC" customModule="LFC" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ThK-Bs-jq1"/>
                         <viewControllerLayoutGuide type="bottom" id="9ET-Us-H6H"/>
@@ -202,10 +199,6 @@
                                         </view>
                                     </collectionViewCell>
                                 </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="ezs-2G-Sb3" id="Qfk-XB-W3Q"/>
-                                    <outlet property="delegate" destination="ezs-2G-Sb3" id="S4N-an-YR8"/>
-                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -223,8 +216,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="Lcg-DF-fvA"/>
                     <connections>
+                        <outlet property="collectionView" destination="sFr-GI-cyj" id="MrA-wR-KhZ"/>
                         <outlet property="galleryView" destination="sFr-GI-cyj" id="wzA-nS-UYX"/>
-                        <outlet property="messageLabel" destination="HaF-O0-z9Y" id="FkA-Xn-QSl"/>
+                        <outlet property="messageLabel" destination="HaF-O0-z9Y" id="SfN-4f-ugV"/>
                         <outlet property="searchBar" destination="X4T-75-eaK" id="ljk-vw-vpy"/>
                         <segue destination="y58-BU-KAt" kind="show" identifier="PhotoDetail" id="eib-3J-1lB"/>
                     </connections>
