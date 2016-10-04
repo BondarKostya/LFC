@@ -9,6 +9,29 @@
 import UIKit
 import FlickrKit
 
+enum LoadType {
+    case ByText(limit:Int,page:Int,searchText:String)
+    case ByPosition(limit:Int,page:Int,bbox:String)
+    
+    func parameters() -> [String:String?]
+    {
+        var dictionary = [String : String?]()
+        switch(self)
+        {
+        case .ByPosition(let limit,let page,let bbox) :
+            dictionary["limit"] = "\(limit)"
+            dictionary["page"] = "\(page)"
+            dictionary["bbox"] = bbox
+        case .ByText(let limit,let page,let searchText) :
+            dictionary["limit"] = "\(limit)"
+            dictionary["page"] = "\(page)"
+            dictionary["text"] = searchText
+        }
+        return dictionary
+    }
+    
+}
+
 class DataManager: NSObject {
     
     static let sharedInstance:DataManager = {
@@ -21,13 +44,14 @@ class DataManager: NSObject {
         
     }
     
-    func loadPhotosFromFlickr(withLimit limit:Int, page:Int, bbox:String,searchText:String,callback: @escaping ([Photo]) -> Void)
+    func loadPhotosFromFlickr(loadType:LoadType,callback: @escaping ([Photo]) -> Void)
     {
         let flickr = FKFlickrPhotosSearch()
-        flickr.per_page = "\(limit)"
-        flickr.page = "\(page)"
-        flickr.bbox = bbox
-        flickr.text = searchText
+        let parameters = loadType.parameters()
+        flickr.per_page = parameters["limit"] ?? ""
+        flickr.page = parameters["page"] ?? ""
+        flickr.text = parameters["text"] ?? ""
+        flickr.bbox = parameters["bbox"] ?? ""
         FlickrKit.shared().call(flickr) { (response, error) in
             DispatchQueue.main.async {
                 if(error != nil)

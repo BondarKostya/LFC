@@ -77,7 +77,7 @@ class SearchVC : UIViewController {
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: page, bbox: AppParameters.sharedInstance.standartBBOX ,searchText: self.searchText, callback: { [weak weakSelf = self] (loadedPhotos) in
+        DataManager.sharedInstance.loadPhotosFromFlickr(loadType: LoadType.ByText(limit: AppParameters.sharedInstance.pageLimit, page: page, searchText:self.searchText), callback: { [weak weakSelf = self] (loadedPhotos) in
             guard let strongSelf = weakSelf else
             {
                 return

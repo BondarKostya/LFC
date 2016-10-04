@@ -81,7 +81,7 @@ class NearbyVC : UIViewController {
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: page, bbox: self.bbox ,searchText: "", callback: { [weak weakSelf = self] (loadedPhotos) in
+        DataManager.sharedInstance.loadPhotosFromFlickr(loadType: LoadType.ByPosition(limit: AppParameters.sharedInstance.pageLimit, page: page, bbox: self.bbox), callback: { [weak weakSelf = self] (loadedPhotos) in
             guard let strongSelf = weakSelf else
             {
                 return
