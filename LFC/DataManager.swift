@@ -30,6 +30,15 @@ class DataManager: NSObject {
         flickr.text = searchText
         FlickrKit.shared().call(flickr) { (response, error) in
             DispatchQueue.main.async {
+                if(error != nil)
+                { 
+                    guard let err = error as? NSError else
+                    {
+                        return
+                    }
+                    let notificationName = Notification.Name("ErrorHandler")
+                    NotificationCenter.default.post(name: notificationName, object: err)
+                }
                 if (response != nil) {
                     var photos = [Photo]()
                     let topPhotos = response?["photos"] as! [String: AnyObject]
@@ -45,6 +54,7 @@ class DataManager: NSObject {
                     }
                     callback(photos)
                 }
+                
             }
         }
         

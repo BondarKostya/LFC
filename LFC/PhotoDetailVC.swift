@@ -17,7 +17,9 @@ class PhotoDetailVC: UIViewController {
     weak var image:Photo?
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let notificationName = Notification.Name("ErrorHandler")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
         self.setBackgroundImage()
         self.automaticallyAdjustsScrollViewInsets = false
         if let photo = self.image {
@@ -36,8 +38,21 @@ class PhotoDetailVC: UIViewController {
                     {
                         return
                     }
-                    photo.photoImageOriginal = image
-                    strongSelf.initScrollView(image!)
+                    if(error != nil)
+                    {
+                        guard let err = error as? NSError else
+                        {
+                            return
+                        }
+                        let notificationName = Notification.Name("ErrorHandler")
+                        NotificationCenter.default.post(name: notificationName, object: err)
+                    }
+                    guard let img = image else
+                    {
+                        return
+                    }
+                    photo.photoImageOriginal = img
+                    strongSelf.initScrollView(img)
                     MBProgressHUD.hide(for: strongSelf.view, animated: true)
                 })
             }
@@ -62,6 +77,22 @@ class PhotoDetailVC: UIViewController {
         
         setZoomScale()
         self.reSetInsets(scrollView)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func errorHandler(_ notification: NSNotification) {
+        
+        guard let error = notification.object as? NSError else
+        {
+            return
+        }
+        let alert = UIAlertController(title: "Error", message:error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        MBProgressHUD.hide(for: self.view, animated: true)
     }
     
     

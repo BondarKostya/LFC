@@ -23,6 +23,10 @@ class SearchVC : UIViewController {
     
     override func viewDidLoad() {
         self.setBackgroundImage()
+        let notificationName = Notification.Name("ErrorHandler")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
+        
         self.title = "Search Photo"
         self.searchBar.barTintColor = UIColor.black
         self.searchBar.tintColor = UIColor.white
@@ -38,11 +42,28 @@ class SearchVC : UIViewController {
         self.galleryView = Gallery(with: self.collectionView)
         self.galleryView.galleryDelegate = self
         self.galleryView.reloadData()
+        
 
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    func errorHandler(_ notification: NSNotification) {
+        
+        guard let error = notification.object as? NSError else
+        {
+            return
+        }
+        let alert = UIAlertController(title: "Error", message:error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        MBProgressHUD.hide(for: self.view, animated: true)
     }
     
     func loadPhotosFromFlickr(page: Int)
@@ -51,7 +72,7 @@ class SearchVC : UIViewController {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         //hud.mode = .determinate
         hud.contentColor = UIColor.lightGray
-        hud.bezelView.style = .solidColor
+        hud.bezelView.style = .solidColor             
         hud.bezelView.color = UIColor.clear
         DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: page, bbox: AppParameters.sharedInstance.standartBBOX ,searchText: self.searchText, callback: { [weak weakSelf = self] (loadedPhotos) in
             guard let strongSelf = weakSelf else

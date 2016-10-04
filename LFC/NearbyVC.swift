@@ -21,15 +21,38 @@ class NearbyVC : UIViewController {
     
     override func viewDidLoad() {
         self.setBackgroundImage()
+        let notificationName = Notification.Name("ErrorHandler")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
+        
         self.galleryView = Gallery(with: self.collectionView)
         self.galleryView.galleryDelegate = self
         self.title = "Nearby"
         self.setupLocation()
-        //self.galleryView.reloadData()
+        // Define identifier
+
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func errorHandler(_ notification: NSNotification) {
+       
+        guard let error = notification.object as? NSError else
+        {
+            return
+        }
+        let alert = UIAlertController(title: "Error", message:error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        MBProgressHUD.hide(for: self.view, animated: true)
+        
     }
     
     func setupLocation()
