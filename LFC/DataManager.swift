@@ -13,21 +13,20 @@ enum LoadType {
     case ByText(limit:Int,page:Int,searchText:String)
     case ByPosition(limit:Int,page:Int,bbox:String)
     
-    func parameters() -> [String:String?]
+    func setupSearch( flickrSearch:inout FKFlickrPhotosSearch)
     {
-        var dictionary = [String : String?]()
         switch(self)
         {
         case .ByPosition(let limit,let page,let bbox) :
-            dictionary["limit"] = "\(limit)"
-            dictionary["page"] = "\(page)"
-            dictionary["bbox"] = bbox
+            flickrSearch.per_page = "\(limit)"
+            flickrSearch.page = "\(page)"
+            flickrSearch.bbox  = bbox
         case .ByText(let limit,let page,let searchText) :
-            dictionary["limit"] = "\(limit)"
-            dictionary["page"] = "\(page)"
-            dictionary["text"] = searchText
+            flickrSearch.per_page = "\(limit)"
+            flickrSearch.page = "\(page)"
+            flickrSearch.text = searchText
+            flickrSearch.bbox = AppParameters.sharedInstance.standartBBOX
         }
-        return dictionary
     }
     
 }
@@ -46,12 +45,8 @@ class DataManager: NSObject {
     
     func loadPhotosFromFlickr(loadType:LoadType,callback: @escaping ([Photo]) -> Void)
     {
-        let flickr = FKFlickrPhotosSearch()
-        let parameters = loadType.parameters()
-        flickr.per_page = parameters["limit"] ?? ""
-        flickr.page = parameters["page"] ?? ""
-        flickr.text = parameters["text"] ?? ""
-        flickr.bbox = parameters["bbox"] ?? ""
+        var flickr = FKFlickrPhotosSearch()
+        loadType.setupSearch(flickrSearch: &flickr)
         FlickrKit.shared().call(flickr) { (response, error) in
             DispatchQueue.main.async {
                 if(error != nil)
