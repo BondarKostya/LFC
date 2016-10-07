@@ -16,8 +16,8 @@ class SearchVC : UIViewController {
 
     @IBOutlet weak var messageLabel: UILabel!
 
-    var galleryView: Gallery!
-
+    @IBOutlet weak var galleryView: UIView!
+    
     var selectedPhoto: Photo?
     var searchText = ""
 
@@ -40,9 +40,10 @@ class SearchVC : UIViewController {
 
         UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as? [String : AnyObject], for: UIControlState.normal)
 
-        self.galleryView = Gallery(with: self.collectionView)
-        self.galleryView.galleryDelegate = self
-        self.galleryView.reloadData()
+//        self.galleryView.
+//        self.galleryView = Gallery(with: self.collectionView)
+//        self.galleryView.galleryDelegate = self
+//        self.galleryView.reloadData()
 
 
     }
@@ -91,8 +92,8 @@ class SearchVC : UIViewController {
                 strongSelf.messageLabel.text = ""
             }
 
-            strongSelf.galleryView.addPhotos(photos: loadedPhotos)
-            strongSelf.galleryView.reloadData()
+//            strongSelf.galleryView.addPhotos(photos: loadedPhotos)
+//            strongSelf.galleryView.reloadData()
         })
     }
 
@@ -145,8 +146,8 @@ extension SearchVC : UISearchBarDelegate
 
     func searchAction()
     {
-        self.galleryView.clearPhotos()
-        self.galleryView.reloadData()
+//        self.galleryView.clearPhotos()
+//        self.galleryView.reloadData()
         self.view.endEditing(true)
     }
 }

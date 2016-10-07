@@ -14,7 +14,7 @@ class NearbyVC : UIViewController {
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
 
-    var galleryView: Gallery!
+    var galleryView: GalleryVC!
 
     var selectedPhoto: Photo?
     var bbox = AppConstants.standartBBOX
@@ -26,10 +26,10 @@ class NearbyVC : UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
 
-        self.galleryView = Gallery(with: self.collectionView)
-        self.galleryView.galleryDelegate = self
-        self.title = "Nearby"
-        self.setupLocation()
+//        self.galleryView = Gallery(with: self.collectionView)
+//        self.galleryView.galleryDelegate = self
+//        self.title = "Nearby"
+//        self.setupLocation()
         // Define identifier
 
 
