@@ -17,7 +17,7 @@ class NearbyVC : UIViewController {
     var galleryView: Gallery!
 
     var selectedPhoto: Photo?
-    var bbox = AppParameters.sharedInstance.standartBBOX
+    var bbox = AppConstants.standartBBOX
 
     override func viewDidLoad()
     {
@@ -67,7 +67,7 @@ class NearbyVC : UIViewController {
 
     func loadPhotosFromFlickr(page: Int)
     {
-        if self.bbox == AppParameters.sharedInstance.standartBBOX
+        if self.bbox == AppConstants.standartBBOX
         {
             self.messageLabel.text = "No results\nfor your current location"
             return;
@@ -77,15 +77,15 @@ class NearbyVC : UIViewController {
         }
         MBProgressHUD.hide(for: self.view, animated: true)
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        //hud.mode = .determinate
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(loadType: LoadType.ByPosition(limit: AppParameters.sharedInstance.pageLimit, page: page, bbox: self.bbox), callback: { [weak weakSelf = self] (loadedPhotos) in
+        FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .positionSearch(limit: AppConstants.pageLimit, page: page, bbox: self.bbox), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
                 return
-    }
+            }
+            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
             if(loadedPhotos.count == 0 && page == 1)
             {
                 strongSelf.messageLabel.text = "No results\nfor your current location"
@@ -94,7 +94,7 @@ class NearbyVC : UIViewController {
             {
                 strongSelf.messageLabel.text = ""
             }
-            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
+            
             strongSelf.galleryView.addPhotos(photos: loadedPhotos)
 
             strongSelf.galleryView.reloadData()

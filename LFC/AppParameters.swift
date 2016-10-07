@@ -8,21 +8,14 @@
 
 import UIKit
 
-class AppParameters: NSObject {
-    static let sharedInstance:AppParameters = {
-        let instance = AppParameters()
-        return instance
-    }()
+struct AppConstants {
+    static let standartBBOX = "-180,-90,180,90"
+    static let pageLimit = 30
     
-    let flikrKey = "7910c73df5e7c958b9e3a534170b7c1b"
-    let flikrSecret = "103ee5a29af20d4b"
-    
-    var standartBBOX = "-180,-90,180,90"
-    let pageLimit = 30
-    
-    private override init()
-    {
-        
+    struct Flickr {
+        static let flikrKey = "7910c73df5e7c958b9e3a534170b7c1b"
+        static let flikrSecret = "103ee5a29af20d4b"
     }
-    
 }
+
+

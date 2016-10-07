@@ -73,11 +73,10 @@ class SearchVC : UIViewController {
     {
         MBProgressHUD.hide(for: self.view, animated: true)
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        //hud.mode = .determinate
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(loadType: LoadType.ByText(limit: AppParameters.sharedInstance.pageLimit, page: page, searchText:self.searchText), callback: { [weak weakSelf = self] (loadedPhotos) in
+        FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .textSearch(limit: AppConstants.pageLimit, page: page, searchText:self.searchText), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
                 return

@@ -21,7 +21,7 @@ class LFCLocationManager : NSObject {
         return instance
     }()
     let locationManager = CLLocationManager()
-    var bbox = AppParameters.sharedInstance.standartBBOX
+    var bbox = AppConstants.standartBBOX
     
     var bboxDelegate:BBOXChangeDelegate?
     

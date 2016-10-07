@@ -15,8 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let apiKey = AppParameters.sharedInstance.flikrKey
-        let secret = AppParameters.sharedInstance.flikrSecret
+        let apiKey = AppConstants.Flickr.flikrKey
+        let secret = AppConstants.Flickr.flikrSecret
         FlickrKit.shared().initialize(withAPIKey: apiKey, sharedSecret: secret)
 
         return true
