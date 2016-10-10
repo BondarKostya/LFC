@@ -8,49 +8,42 @@
 
 import UIKit
 import MBProgressHUD
+import CoreLocation
 
 class NearbyVC : UIViewController {
 
     @IBOutlet weak var messageLabel: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView!
 
-    var galleryView: Gallery!
-
-    var selectedPhoto: Photo?
-    var bbox = AppParameters.sharedInstance.standartBBOX
+    var galleryVC: GalleryVC?
+    var bbox = AppConstants.standartBBOX
+    var locationManager: LocationManager?
 
     override func viewDidLoad()
     {
         self.setBackgroundImage()
-        let notificationName = Notification.Name("ErrorHandler")
-
-        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
-
-        self.galleryView = Gallery(with: self.collectionView)
-        self.galleryView.galleryDelegate = self
+        
         self.title = "Nearby"
         self.setupLocation()
-        // Define identifier
-
-
+        
+        if let galleryVC = self.childViewControllers.last as? GalleryVC{
+            self.galleryVC = galleryVC
+            galleryVC.galleryDelegate = self
+            galleryVC.reloadData()
+        }
+        
     }
 
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
     }
-
+    
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        self.locationManager?.removeDelegate(delegate: self)
     }
 
-    func errorHandler(_ notification: NSNotification)
+    func errorHandler(_ error: Error)
     {
-
-        guard let error = notification.object as? NSError else
-        {
-            return
-        }
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -60,14 +53,13 @@ class NearbyVC : UIViewController {
 
     func setupLocation()
     {
-        LFCLocationManager.sharedInstance.bboxDelegate = self
-        LFCLocationManager.sharedInstance.setupLocation()
-
+        self.locationManager = LocationManager()
+        self.locationManager?.addDelegate(delegate: self)
     }
 
     func loadPhotosFromFlickr(page: Int)
     {
-        if self.bbox == AppParameters.sharedInstance.standartBBOX
+        if self.bbox == AppConstants.standartBBOX
         {
             self.messageLabel.text = "No results\nfor your current location"
             return;
@@ -77,15 +69,21 @@ class NearbyVC : UIViewController {
         }
         MBProgressHUD.hide(for: self.view, animated: true)
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        //hud.mode = .determinate
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: page, bbox: self.bbox ,searchText: "", callback: { [weak weakSelf = self] (loadedPhotos) in
+        FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .positionSearch(limit: AppConstants.pageLimit, page: page, bbox: self.bbox), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
                 return
-    }
+            }
+            if(error != nil) {
+                DispatchQueue.main.async {
+                    strongSelf.errorHandler(error!)
+                }
+                return
+            }
+            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
             if(loadedPhotos.count == 0 && page == 1)
             {
                 strongSelf.messageLabel.text = "No results\nfor your current location"
@@ -94,26 +92,12 @@ class NearbyVC : UIViewController {
             {
                 strongSelf.messageLabel.text = ""
             }
-            MBProgressHUD.hide(for: weakSelf!.view, animated: true)
-            strongSelf.galleryView.addPhotos(photos: loadedPhotos)
+            
+            strongSelf.galleryVC!.addPhotos(photos: loadedPhotos)
 
-            strongSelf.galleryView.reloadData()
+            strongSelf.galleryVC!.reloadData()
         })
     }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if(segue.identifier == "PhotoDetail")
-        {
-            let photoDetailVC = segue.destination as! PhotoDetailVC
-
-            if let photo = self.selectedPhoto {
-                photoDetailVC.image = photo
-            }
-
-        }
-    }
-
 
 }
 
@@ -126,19 +110,24 @@ extension NearbyVC : GalleryDelegate
 
     func photoDidSelect(_ selectedItem: Photo)
     {
-        self.selectedPhoto = selectedItem
-        self.performSegue(withIdentifier: "PhotoDetail", sender: self)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let photoDetailVC = storyboard.instantiateViewController(withIdentifier: "PhotoDetailVC") as! PhotoDetailVC
+        photoDetailVC.image = selectedItem
+        self.navigationController?.pushViewController(photoDetailVC, animated: true)
     }
 }
 
-extension NearbyVC : BBOXChangeDelegate
+extension NearbyVC : LocationManagerDelegate
 {
 
-    func bboxChanged(bbox: String)
+    func locationChanged(location: CLLocation?)
     {
-        self.bbox = bbox
-        self.galleryView.clearPhotos()
-        self.galleryView.reloadData()
+        guard let location = location else {
+            return
+        }
+        self.bbox = LocationSquare.calculateLocationSquare(location: location, rangeInMeters: 1000)
+        self.galleryVC!.clearPhotos()
+        self.galleryVC!.reloadData()
     }
 }
 

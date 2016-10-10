@@ -12,22 +12,15 @@ import MBProgressHUD
 class SearchVC : UIViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var collectionView: UICollectionView!
-
     @IBOutlet weak var messageLabel: UILabel!
 
-    var galleryView: Gallery!
-
-    var selectedPhoto: Photo?
+    var galleryVC: GalleryVC?
     var searchText = ""
 
     override func viewDidLoad()
     {
         self.setBackgroundImage()
-        let notificationName = Notification.Name("ErrorHandler")
-
-        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
-
+        
         self.title = "Search Photo"
         self.searchBar.barTintColor = UIColor.black
         self.searchBar.tintColor = UIColor.white
@@ -40,16 +33,13 @@ class SearchVC : UIViewController {
 
         UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as? [String : AnyObject], for: UIControlState.normal)
 
-        self.galleryView = Gallery(with: self.collectionView)
-        self.galleryView.galleryDelegate = self
-        self.galleryView.reloadData()
+        if let galleryVC = self.childViewControllers.last as? GalleryVC{
+            self.galleryVC = galleryVC
+            galleryVC.galleryDelegate = self
+            galleryVC.reloadData()
+        }
 
 
-    }
-
-    deinit
-    {
-        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewWillAppear(_ animated: Bool)
@@ -57,12 +47,8 @@ class SearchVC : UIViewController {
         super.viewWillAppear(animated)
     }
 
-    func errorHandler(_ notification: NSNotification)
+    func errorHandler(_ error: Error)
     {
-        guard let error = notification.object as? NSError else
-        {
-            return
-        }
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -73,13 +59,18 @@ class SearchVC : UIViewController {
     {
         MBProgressHUD.hide(for: self.view, animated: true)
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        //hud.mode = .determinate
         hud.contentColor = UIColor.lightGray
         hud.bezelView.style = .solidColor
         hud.bezelView.color = UIColor.clear
-        DataManager.sharedInstance.loadPhotosFromFlickr(withLimit: AppParameters.sharedInstance.pageLimit, page: page, bbox: AppParameters.sharedInstance.standartBBOX ,searchText: self.searchText, callback: { [weak weakSelf = self] (loadedPhotos) in
+        FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .textSearch(limit: AppConstants.pageLimit, page: page, searchText:self.searchText), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
+                return
+            }
+            if(error != nil) {
+                DispatchQueue.main.async {
+                    strongSelf.errorHandler(error!)
+                }
                 return
             }
             MBProgressHUD.hide(for: weakSelf!.view, animated: true)
@@ -92,24 +83,11 @@ class SearchVC : UIViewController {
                 strongSelf.messageLabel.text = ""
             }
 
-            strongSelf.galleryView.addPhotos(photos: loadedPhotos)
-            strongSelf.galleryView.reloadData()
+            strongSelf.galleryVC?.addPhotos(photos: loadedPhotos)
+            strongSelf.galleryVC?.reloadData()
         })
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if(segue.identifier == "PhotoDetail")
-        {
-            let photoDetailVC = segue.destination as! PhotoDetailVC
-
-            if let photo = self.selectedPhoto
-            {
-                photoDetailVC.image = photo
-            }
-
-        }
-    }
 }
 
 extension SearchVC : GalleryDelegate
@@ -121,8 +99,10 @@ extension SearchVC : GalleryDelegate
 
     func photoDidSelect(_ selectedItem: Photo)
     {
-        self.selectedPhoto = selectedItem
-        self.performSegue(withIdentifier: "PhotoDetail", sender: self)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let photoDetailVC = storyboard.instantiateViewController(withIdentifier: "PhotoDetailVC") as! PhotoDetailVC
+        photoDetailVC.image = selectedItem
+        self.navigationController?.pushViewController(photoDetailVC, animated: true)
     }
 }
 
@@ -146,8 +126,8 @@ extension SearchVC : UISearchBarDelegate
 
     func searchAction()
     {
-        self.galleryView.clearPhotos()
-        self.galleryView.reloadData()
+        self.galleryVC?.clearPhotos()
+        self.galleryVC?.reloadData()
         self.view.endEditing(true)
     }
 }

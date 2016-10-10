@@ -18,9 +18,7 @@ class PhotoDetailVC: UIViewController {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        let notificationName = Notification.Name("ErrorHandler")
         
-        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
         self.setBackgroundImage()
         self.automaticallyAdjustsScrollViewInsets = false
         if let photo = self.image {
@@ -30,7 +28,6 @@ class PhotoDetailVC: UIViewController {
                 self.initScrollView(self.imageView.image!)
             }else{
                 let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-                //hud.mode = .determinate
                 hud.contentColor = UIColor.lightGray
                 hud.bezelView.style = .solidColor
                 hud.bezelView.color = UIColor.clear
@@ -39,14 +36,17 @@ class PhotoDetailVC: UIViewController {
                     {
                         return
                     }
+                    MBProgressHUD.hide(for: strongSelf.view, animated: true)
                     if(error != nil)
                     {
-                        guard let err = error as? NSError else
+                        guard let error = error as? NSError else
                         {
                             return
                         }
-                        let notificationName = Notification.Name("ErrorHandler")
-                        NotificationCenter.default.post(name: notificationName, object: err)
+                        DispatchQueue.main.async {
+                            strongSelf.errorHandler(error)
+                        }
+                        
                     }
                     guard let img = image else
                     {
@@ -54,7 +54,7 @@ class PhotoDetailVC: UIViewController {
                     }
                     photo.photoImageOriginal = img
                     strongSelf.initScrollView(img)
-                    MBProgressHUD.hide(for: strongSelf.view, animated: true)
+                    
                 })
             }
         }
@@ -63,15 +63,12 @@ class PhotoDetailVC: UIViewController {
     
     func initScrollView(_ image: UIImage)
     {
-        print("image")
         let imageSize = image.size
         
         let scale = imageSize.width / imageSize.height
         self.imageView.frame = CGRect.init(x: 0, y: 0, width: (self.view.bounds.size.width), height: (self.view.bounds.size.width) / scale)
-        //self.imageView.center = self.scrollView.center;
         self.scrollView.contentSize = self.imageView.bounds.size
         self.scrollView.frame = self.view.frame
-        //self.scrollView.autoresizingMask =
         self.scrollView.delegate = self
         
         self.scrollView.addSubview(self.imageView)
@@ -84,14 +81,9 @@ class PhotoDetailVC: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func errorHandler(_ notification: NSNotification)
+    func errorHandler(_ error : NSError)
     {
-        
-        guard let error = notification.object as? NSError else
-        {
-            return
-        }
-        let alert = UIAlertController(title: "Error", message:error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
         MBProgressHUD.hide(for: self.view, animated: true)
@@ -106,29 +98,17 @@ class PhotoDetailVC: UIViewController {
 
     func setZoomScale()
     {
-        let imageViewSize = self.imageView.bounds.size
-        let scrollViewSize = self.scrollView.bounds.size
-//        let widthScale = scrollViewSize.width / imageViewSize.width
-//        let heightScale = scrollViewSize.height / imageViewSize.height
-        
         self.scrollView.minimumZoomScale = 0.1
         self.scrollView.maximumZoomScale = 4.0
-        self.scrollView.zoomScale = 1.0
-        
+        self.scrollView.zoomScale = 1.0        
     }
     
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
-        print("layout")
         self.reSetInsets(self.scrollView)
     }
     
-    override func didReceiveMemoryWarning()
-    {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
 extension PhotoDetailVC: UIScrollViewDelegate {
@@ -136,14 +116,9 @@ extension PhotoDetailVC: UIScrollViewDelegate {
         return imageView
     }
     
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat)
-    {
-        print(scale)
-    }
     func scrollViewDidZoom(_ scrollView: UIScrollView)  {
         print(scrollView.zoomScale)
         self.reSetInsets(scrollView)
-        //print(scrollView.contentInset)
     }
     
     func reSetInsets(_ scrollView: UIScrollView)

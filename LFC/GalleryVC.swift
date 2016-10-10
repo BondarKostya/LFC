@@ -19,31 +19,20 @@ protocol GalleryDelegate {
 
 }
 
-class Gallery : NSObject
+class GalleryVC : UIViewController
 {
-    //MARK: Properties
-    private var galleryView: UICollectionView!
-
+    @IBOutlet weak var galleryView: UICollectionView!
     var galleryDelegate: GalleryDelegate?
-
     internal var photos = [Photo]()
     internal var selectedPhoto: Photo?
     internal var page = 1
 
 
-
-    init(with collectionView: UICollectionView!)
-    {
-        super.init()
-        self.galleryView = collectionView
-
-        self.galleryView.delegate = self
-        self.galleryView.dataSource = self
+    override func viewDidLoad() {
         self.galleryView.register(UINib(nibName: "GalleryPhotoCVC", bundle: nil), forCellWithReuseIdentifier: "GalleryPhotoCVC")
-
         self.galleryInit()
     }
-
+    
     func clearPhotos()
     {
         self.photos = [Photo] ()
@@ -100,7 +89,7 @@ class Gallery : NSObject
 }
 
 
-extension Gallery : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching
+extension GalleryVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching
 {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {

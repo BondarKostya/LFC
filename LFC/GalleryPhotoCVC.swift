@@ -36,11 +36,11 @@ class GalleryPhotoCVC: UICollectionViewCell {
             self.imageView.image = photo.photoImageThumbnail
         }else{
             let hud = MBProgressHUD.showAdded(to: self.imageView, animated: true)
-            //hud.mode = .determinate
             hud.contentColor = UIColor.lightGray
             hud.bezelView.style = .solidColor
             hud.bezelView.color = UIColor.clear
             self.imageView.sd_setImage(with: photo.photoURLThumbnail!, completed: { (image, error, cashetype, url) in
+                MBProgressHUD.hide(for: self.imageView, animated: true)
                 if(error != nil)
                 {
                     guard let err = error as? NSError else
@@ -55,7 +55,7 @@ class GalleryPhotoCVC: UICollectionViewCell {
                     return
                 }
                 photo.photoImageThumbnail = img
-                MBProgressHUD.hide(for: self.imageView, animated: true)
+                
             })
         }
         self.imageView.contentMode = .scaleAspectFill

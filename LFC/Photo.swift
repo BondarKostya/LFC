@@ -10,15 +10,16 @@ import Foundation
 import UIKit
 
 
-class Photo : NSObject
+class Photo
 {
     var photoTitle = ""
-    var photoURLThumbnail:URL?
-    var photoURLOriginal:URL?
+    var photoURLThumbnail: URL?
+    var photoURLOriginal: URL?
     var photoId = ""
-    var photoImageThumbnail:UIImage?
-    var photoImageOriginal:UIImage?
-    init(photoDictionary : Dictionary<String,AnyObject>,photoURLThumbnail : URL,photoURLOriginal : URL)
+    var photoImageThumbnail: UIImage?
+    var photoImageOriginal: UIImage?
+    
+    init(photoDictionary : Dictionary<String,AnyObject>, photoURLThumbnail : URL, photoURLOriginal : URL)
     {
         self.photoTitle = photoDictionary["title"] as! String
         self.photoId = photoDictionary["id"] as! String
