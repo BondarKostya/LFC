@@ -12,36 +12,28 @@ import MBProgressHUD
 class NearbyVC : UIViewController {
 
     @IBOutlet weak var messageLabel: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView!
 
-    var galleryView: GalleryVC!
-
-    var selectedPhoto: Photo?
+    var galleryVC: GalleryVC?
     var bbox = AppConstants.standartBBOX
 
     override func viewDidLoad()
     {
         self.setBackgroundImage()
-        let notificationName = Notification.Name("ErrorHandler")
-
-        NotificationCenter.default.addObserver(self, selector: #selector(NearbyVC.errorHandler), name: notificationName, object: nil)
-
-//        self.galleryView = Gallery(with: self.collectionView)
-//        self.galleryView.galleryDelegate = self
-//        self.title = "Nearby"
-//        self.setupLocation()
-        // Define identifier
-
-
+        
+        self.title = "Nearby"
+        self.setupLocation()
+        
+        if let galleryVC = self.childViewControllers.last as? GalleryVC{
+            self.galleryVC = galleryVC
+            galleryVC.galleryDelegate = self
+            galleryVC.reloadData()
+        }
+        
     }
 
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
     func errorHandler(_ notification: NSNotification)
@@ -95,25 +87,11 @@ class NearbyVC : UIViewController {
                 strongSelf.messageLabel.text = ""
             }
             
-            strongSelf.galleryView.addPhotos(photos: loadedPhotos)
+            strongSelf.galleryVC!.addPhotos(photos: loadedPhotos)
 
-            strongSelf.galleryView.reloadData()
+            strongSelf.galleryVC!.reloadData()
         })
     }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if(segue.identifier == "PhotoDetail")
-        {
-            let photoDetailVC = segue.destination as! PhotoDetailVC
-
-            if let photo = self.selectedPhoto {
-                photoDetailVC.image = photo
-            }
-
-        }
-    }
-
 
 }
 
@@ -126,8 +104,10 @@ extension NearbyVC : GalleryDelegate
 
     func photoDidSelect(_ selectedItem: Photo)
     {
-        self.selectedPhoto = selectedItem
-        self.performSegue(withIdentifier: "PhotoDetail", sender: self)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let photoDetailVC = storyboard.instantiateViewController(withIdentifier: "PhotoDetailVC") as! PhotoDetailVC
+        photoDetailVC.image = selectedItem
+        self.navigationController?.pushViewController(photoDetailVC, animated: true)
     }
 }
 
@@ -137,8 +117,8 @@ extension NearbyVC : BBOXChangeDelegate
     func bboxChanged(bbox: String)
     {
         self.bbox = bbox
-        self.galleryView.clearPhotos()
-        self.galleryView.reloadData()
+        self.galleryVC!.clearPhotos()
+        self.galleryVC!.reloadData()
     }
 }
 

@@ -23,21 +23,14 @@ class GalleryVC : UIViewController
 {
     @IBOutlet weak var galleryView: UICollectionView!
     var galleryDelegate: GalleryDelegate?
-
     internal var photos = [Photo]()
     internal var selectedPhoto: Photo?
     internal var page = 1
 
 
     override func viewDidLoad() {
-//        self.galleryView = collectionView
-        
-//        self.galleryView.delegate = self
-//        self.galleryView.dataSource = self
         self.galleryView.register(UINib(nibName: "GalleryPhotoCVC", bundle: nil), forCellWithReuseIdentifier: "GalleryPhotoCVC")
-        
         self.galleryInit()
-
     }
     
     func clearPhotos()
