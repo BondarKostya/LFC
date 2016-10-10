@@ -8,6 +8,7 @@
 
 import UIKit
 import MBProgressHUD
+import CoreLocation
 
 class NearbyVC : UIViewController {
 
@@ -15,6 +16,7 @@ class NearbyVC : UIViewController {
 
     var galleryVC: GalleryVC?
     var bbox = AppConstants.standartBBOX
+    var locationManager: LocationManager?
 
     override func viewDidLoad()
     {
@@ -35,14 +37,13 @@ class NearbyVC : UIViewController {
     {
         super.viewWillAppear(animated)
     }
+    
+    deinit {
+        self.locationManager?.removeDelegate(delegate: self)
+    }
 
-    func errorHandler(_ notification: NSNotification)
+    func errorHandler(_ error: Error)
     {
-
-        guard let error = notification.object as? NSError else
-        {
-            return
-        }
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -52,9 +53,8 @@ class NearbyVC : UIViewController {
 
     func setupLocation()
     {
-        LFCLocationManager.sharedInstance.bboxDelegate = self
-        LFCLocationManager.sharedInstance.setupLocation()
-
+        self.locationManager = LocationManager()
+        self.locationManager?.addDelegate(delegate: self)
     }
 
     func loadPhotosFromFlickr(page: Int)
@@ -75,6 +75,12 @@ class NearbyVC : UIViewController {
         FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .positionSearch(limit: AppConstants.pageLimit, page: page, bbox: self.bbox), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
+                return
+            }
+            if(error != nil) {
+                DispatchQueue.main.async {
+                    strongSelf.errorHandler(error!)
+                }
                 return
             }
             MBProgressHUD.hide(for: weakSelf!.view, animated: true)
@@ -111,12 +117,15 @@ extension NearbyVC : GalleryDelegate
     }
 }
 
-extension NearbyVC : BBOXChangeDelegate
+extension NearbyVC : LocationManagerDelegate
 {
 
-    func bboxChanged(bbox: String)
+    func locationChanged(location: CLLocation?)
     {
-        self.bbox = bbox
+        guard let location = location else {
+            return
+        }
+        self.bbox = LocationSquare.calculateLocationSquare(location: location, rangeInMeters: 1000)
         self.galleryVC!.clearPhotos()
         self.galleryVC!.reloadData()
     }

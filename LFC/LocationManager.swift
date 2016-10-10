@@ -10,63 +10,47 @@ import Foundation
 import MapKit
 import SDWebImage
 
-protocol BBOXChangeDelegate {
-    func bboxChanged(bbox: String)
+protocol LocationManagerDelegate: NSObjectProtocol {
+    func locationChanged(location: CLLocation?)
 }
 
-class LFCLocationManager : NSObject {
+class LocationManager : NSObject {
     
-    static let sharedInstance:LFCLocationManager = {
-        let instance = LFCLocationManager()
-        return instance
-    }()
     let locationManager = CLLocationManager()
     var bbox = AppConstants.standartBBOX
     
-    var bboxDelegate:BBOXChangeDelegate?
+    internal var locationManagerDelegates = [LocationManagerDelegate?]()
     
-    private override init()
+    override init()
     {
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
-}
-
-extension LFCLocationManager : CLLocationManagerDelegate
-{
-    func setupLocation()
-    {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        if let locationBBOX = self.checkLocation(status: CLLocationManager.authorizationStatus())
-        {
-            self.bbox = locationBBOX
+    func addDelegate(delegate: LocationManagerDelegate) {
+        locationManagerDelegates.append(delegate)
+    }
+    
+    func removeDelegate(delegate: LocationManagerDelegate) {
+        for i in ( 0..<self.locationManagerDelegates.count){
+            if (locationManagerDelegates[i]?.isEqual(delegate))! {
+                locationManagerDelegates.remove(at: i)
+                break;
+            }
         }
     }
-    func checkLocation(status: CLAuthorizationStatus) -> String?
+    
+}
+
+extension LocationManager : CLLocationManagerDelegate
+{
+    func location(status: CLAuthorizationStatus) -> CLLocation?
     {
-        
         switch status {
         case .authorizedAlways,
              .authorizedWhenInUse:
-            guard let location = locationManager.location else
-            {
-                return nil
-            }
-            print(location.coordinate.longitude)
-            print(location.coordinate.latitude)
-            let centerCoord = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            let region = MKCoordinateRegionMakeWithDistance(centerCoord, 1000, 1000)
-            
-            let latMin = region.center.latitude - 0.5 * region.span.latitudeDelta;
-            let latMax = region.center.latitude + 0.5 * region.span.latitudeDelta;
-            let lonMin = region.center.longitude - 0.5 * region.span.longitudeDelta;
-            let lonMax = region.center.longitude + 0.5 * region.span.longitudeDelta;
-            
-            print("\(lonMin),\(latMin),\(lonMax),\(latMax)")
-            return "\(lonMin),\(latMin),\(lonMax),\(latMax)"
+            return locationManager.location
         default:
             print("Not Authorised")
             locationManager.requestWhenInUseAuthorization()
@@ -74,15 +58,25 @@ extension LFCLocationManager : CLLocationManagerDelegate
         }
         
     }
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        for delegate in self.locationManagerDelegates {
+            guard let delegate = delegate else {
+                continue
+            }
+            delegate.locationChanged(location: self.location(status: CLLocationManager.authorizationStatus()))
+        }
+    }
+    
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
     {
-        if let locationBBOX = self.checkLocation(status: CLLocationManager.authorizationStatus())
-        {
-            self.bbox = locationBBOX
-            guard let delegate = self.bboxDelegate else {
-                return
+        for delegate in self.locationManagerDelegates {
+            guard let delegate = delegate else {
+                continue
             }
-            delegate.bboxChanged(bbox: bbox)
+            delegate.locationChanged(location: self.location(status: CLLocationManager.authorizationStatus()))
         }
     }
 

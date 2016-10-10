@@ -47,12 +47,8 @@ class SearchVC : UIViewController {
         super.viewWillAppear(animated)
     }
 
-    func errorHandler(_ notification: NSNotification)
+    func errorHandler(_ error: Error)
     {
-        guard let error = notification.object as? NSError else
-        {
-            return
-        }
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -69,6 +65,12 @@ class SearchVC : UIViewController {
         FlickrAPIClient.sharedInstance.searchPhotos(withParameters: .textSearch(limit: AppConstants.pageLimit, page: page, searchText:self.searchText), callback: { [weak weakSelf = self] (loadedPhotos,error) in
             guard let strongSelf = weakSelf else
             {
+                return
+            }
+            if(error != nil) {
+                DispatchQueue.main.async {
+                    strongSelf.errorHandler(error!)
+                }
                 return
             }
             MBProgressHUD.hide(for: weakSelf!.view, animated: true)
